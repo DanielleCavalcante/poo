@@ -16,30 +16,30 @@ public class Aplic {
         double raio; //para receber o raio
         
         //definição da matriz
-        Circulo[] objCirculo = new Circulo[10]; 
+        Circulo[] matCirc = new Circulo[10]; 
         
         //ENTRADA DE DADOS
-        for(int i = 0; i < 10; i++){    
+        for(int i = 0; i < matCirc.length ; i++){    
             System.out.println("\nCírculo " + (i+1) + ":");
             System.out.print("Digite a unidade de medida: ");
             unidade = entrada.next();
             
             //instanciando os objetos
-            objCirculo[i] = new Circulo(unidade); 
+            matCirc[i] = new Circulo(unidade); 
             
             System.out.print("Digite o valor do raio: ");
             raio = entrada.nextDouble();
             
             //passando parâmetros
-            objCirculo[i].setRaio(raio); 
+            matCirc[i].setRaio(raio); 
         }
         
         //SAÍDA DE DADOS
-        for(int i = 0; i < 10; i++){
+        for(int i = 0; i < matCirc.length; i++){
             System.out.println("\nCírculo " + (i+1) + ":");
-            System.out.println("Área: " + df.format(objCirculo[i].calcArea()) + " " + objCirculo[i].getUnidadeMedida());
-            System.out.println("Perímetro: " + df.format(objCirculo[i].calcPerimetro()) + " " + objCirculo[i].getUnidadeMedida());
-            System.out.println("Diâmetro: " + df.format(objCirculo[i].calcDiametro()) + " " + objCirculo[i].getUnidadeMedida());
+            System.out.println("Área: " + df.format(matCirc[i].calcArea()) + " " + matCirc[i].getUnidadeMedida());
+            System.out.println("Perímetro: " + df.format(matCirc[i].calcPerimetro()) + " " + matCirc[i].getUnidadeMedida());
+            System.out.println("Diâmetro: " + df.format(matCirc[i].calcDiametro()) + " " + matCirc[i].getUnidadeMedida());
         }
     }
 }
