@@ -17,10 +17,10 @@ public class Aplic {
         Double valor;
 
         //definição da matriz
-        ContaCorrente[] objContaCorrente = new ContaCorrente[3];
+        ContaCorrente[] objContaCorrente = new ContaCorrente[15];
 
         //ENTRADA DE DADOS
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < objContaCorrente.length; i++) {
             System.out.println("\n--------------------------------");
             System.out.print("Digite o número da conta: ");
             numConta = entrada.nextInt();
