@@ -44,12 +44,12 @@ Sinta-se à vontade para usar este recurso como um guia de estudo e prática.
 
 ## Contato
 
-Se você tiver alguma dúvida ou comentário sobre este repositório, entre em contato com a autora:
+Se você tiver alguma dúvida ou comentário sobre este repositório, entre em contato:
 
-* Nome: **Danielle Cavalcante**
-* E-mail Acadêmico: **danielle.silva19@fatec.sp.gov.br**
+* Autora: **DanielleCavalcante**
+* E-mail: **danielle.silva19@fatec.sp.gov.br**
 * GitHub: **[https://github.com/DanielleCavalcante](https://github.com/DanielleCavalcante)**
-* Fatec Sorocaba - Ano de Ingresso: **2023**
+* Fatec Sorocaba - Ano de Ingresso: **2022**
 
 ## FAQ
 
