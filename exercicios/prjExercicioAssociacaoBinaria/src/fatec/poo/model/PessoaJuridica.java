@@ -18,14 +18,14 @@ public class PessoaJuridica extends Pessoa {
         return (anoAtual - getAnoInscricao()) * (taxaIncentivo/100 * getTotalCompras());
     }
 
-    public void setTaxaIncentivo(double taxaIncentivo) { //em %
-        this.taxaIncentivo = taxaIncentivo;
-    }
-
     public String getCGC() {
         return cgc;
     }
 
+    public void setTaxaIncentivo(double taxaIncentivo) { //em %
+        this.taxaIncentivo = taxaIncentivo;
+    }
+    
     public double getTaxaIncentivo() {
         return taxaIncentivo;
     }
