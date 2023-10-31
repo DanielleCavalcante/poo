@@ -2,15 +2,15 @@ package fatec.poo.model;
 
 /**
  *
- * @author danielle
+ * @author Adriana, Danielle e Franciele
  */
+
 public class Quarto {
     private int numero;
     private String tipo;
     private boolean situacao;
     private double valorDiaria;
     private double totalFaturado;
-    private Registro registro; //multiplicidade 1 - aponta para um registro
 
     public Quarto(int numero, String tipo, double valorDiaria) {
         this.numero = numero;
@@ -47,5 +47,4 @@ public class Quarto {
     public double getTotalFaturado() {
         return totalFaturado;
     }
-    
 }

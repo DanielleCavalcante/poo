@@ -4,19 +4,21 @@ import java.util.ArrayList;
 
 /**
  *
- * @author danielle
+ * @author Adriana, Danielle e Franciele
  */
+
 public class Recepcionista extends Pessoa{
     private int regFunc;
     private String turno;
-    private ArrayList<Registro> registro; //multiplicidade 1..* - um recepcionista pode registrar diversos hospedes
+    
+    ArrayList<Registro> registro = new ArrayList<Registro>(); //multiplicidade 1..* - um recepcionista pode registrar diversos hospedes
 
     public Recepcionista(int regFunc, String nome) { //metodo construtor que recebe parametros do registro e nome
         super(nome);
         this.regFunc = regFunc;
     }
 
-    public void setTurno(String turno) { //manha, tarde, noite
+    public void setTurno(String turno) { //M-manha, T-tarde, N-noite
         this.turno = turno;
     }
 
@@ -26,6 +28,5 @@ public class Recepcionista extends Pessoa{
 
     public String getTurno() { //retorna o turno do(a) recepcionista
         return turno;
-    }
-    
+    } 
 }
