@@ -2,7 +2,7 @@ package fatec.poo.model;
 
 /**
  *
- * @author danielle
+ * @author Adriana, Danielle e Franciele
  */
 
 public class Pessoa {

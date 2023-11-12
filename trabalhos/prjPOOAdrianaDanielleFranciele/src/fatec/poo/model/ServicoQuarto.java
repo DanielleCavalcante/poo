@@ -9,7 +9,7 @@ public class ServicoQuarto {
     private int codigo;
     private String descricao;
     private double valor;
-    private Registro registro; //multiplicidade 1 - aponta para um registro
+    //private Registro registro; -- professor falou para tirar
 
     public ServicoQuarto(int codigo, String descricao) {
         this.codigo = codigo;

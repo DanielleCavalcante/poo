@@ -11,11 +11,13 @@ public class Recepcionista extends Pessoa{
     private int regFunc;
     private String turno;
     
-    ArrayList<Registro> registro = new ArrayList<Registro>(); //multiplicidade 1..* - um recepcionista pode registrar diversos hospedes
+    //ArrayList de Registro definido como atributo privado
+    private ArrayList<Registro> registro;
 
     public Recepcionista(int regFunc, String nome) { //metodo construtor que recebe parametros do registro e nome
         super(nome);
         this.regFunc = regFunc;
+        this.registro = new ArrayList<Registro>(); //instanciação dentro do construtor
     }
 
     public void setTurno(String turno) { //M-manha, T-tarde, N-noite
@@ -29,4 +31,10 @@ public class Recepcionista extends Pessoa{
     public String getTurno() { //retorna o turno do(a) recepcionista
         return turno;
     } 
+    
+    //método addRegistro para efetivar a associação binária entre Recepcionista e Registro
+    public void addRegistro(Registro registro) {
+        this.registro.add(registro);
+        registro.setRecepcionista(this); //this para simplificar a associação
+    }
 }

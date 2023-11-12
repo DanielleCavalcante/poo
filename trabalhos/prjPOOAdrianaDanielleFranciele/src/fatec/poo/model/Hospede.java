@@ -8,25 +8,31 @@ import java.util.ArrayList;
  */
 
 public class Hospede extends Pessoa {
-   private String cpf;
-   private double taxaDesconto;
+    private String cpf;
+    private double taxaDesconto;
+    private ArrayList<Registro> registro; // ArrayList como atributo privado
 
-    public Hospede(String cpf, String nome) {//recebe como parametros o cpf do hospede e o nome
+    public Hospede(String cpf, String nome) {
         super(nome);
         this.cpf = cpf;
-    }
-    
-    ArrayList<Registro> registro = new ArrayList<Registro>(); //multiplicidade 1..* - um hospede pode ter varios registros
-
-    public void setTaxaDesconto(double taxaDesconto) { //recebe a taxa de desconto em %
-        this.taxaDesconto = taxaDesconto; //100
+        this.registro = new ArrayList<>(); // Instanciando o ArrayList no construtor
     }
 
-    public String getCpf() { //retorna o cpf do hospede
+    public void setTaxaDesconto(double taxaDesconto) {
+        this.taxaDesconto = taxaDesconto;
+    }    
+
+    public String getCpf() {
         return cpf;
     }
 
-    public double getTaxaDesconto() { //retorna a taxa de desconto
+    public double getTaxaDesconto() {
         return taxaDesconto;
-    }  
+    }
+
+    // AddRegistro
+    public void addRegistro(Registro r) {
+    registro.add(r); //usar o this
+    r.setHospede(this); // o hospede aponta para um registro
+    }
 }
