@@ -30,10 +30,7 @@ public class Registro{
         this.dataSaida = dataSaida;
     }
 
-    public void setHospede(Hospede hospede) { //para poder usar no addRegistro da classe Hospede
-        this.hospede = hospede;
-    }
-
+   
     public void setRecepcionista(Recepcionista recepcionista) { //para poder usar no addRegistro da classe recepcionista
         this.recepcionista = recepcionista;
     }
@@ -68,7 +65,8 @@ public class Registro{
     }
     
     public void reservarQuarto(Hospede hospede, Quarto quarto){ //recebe o endereço de um hospede e de um quarto
-        this.hospede = hospede;
+        this.hospede = hospede; //registro --> hospede
+        hospede.addRegistro(this); //hospede --> registro
         this.quarto = quarto;
         quarto.reservar();
     }
@@ -76,26 +74,20 @@ public class Registro{
     public double liberarQuarto(){
         int diasHospedagem = dataEntrada.until(dataSaida).getDays();
         
-        double valorDiaria = quarto.getValorDiaria();
-        double valorTotalDiarias = diasHospedagem * valorDiaria;
+        valorHospedagem = quarto.liberar(diasHospedagem); //o método liberar já retorna o valor da hospedagem, não precisa calcular de novo
+        
         double valorTotalServicos = 0.0;
 
         for (int i = 0; i < servicoquarto.size(); i++) { //percorrer os serviços de quarto na lista
             valorTotalServicos += servicoquarto.get(i).getValor();
         }
-
-        valorHospedagem = valorTotalDiarias + valorTotalServicos;
         double valorDesconto = 0.0;
-
-        if (hospede != null) {
-            double desconto = hospede.getTaxaDesconto() / 100.0;
-            valorDesconto = valorTotalDiarias * desconto;
-            // Subtrai o valor do desconto do total da hospedagem
-            valorHospedagem -= valorDesconto;
-        }
+        double desconto = hospede.getTaxaDesconto() / 100.0;
+        valorDesconto = valorHospedagem * desconto;
+        // Subtrai o valor do desconto do total da hospedagem
+        valorHospedagem -= valorDesconto;
         
-        quarto.liberar(diasHospedagem);
-
+        valorHospedagem += valorTotalServicos;
         return valorHospedagem;
     }
 }

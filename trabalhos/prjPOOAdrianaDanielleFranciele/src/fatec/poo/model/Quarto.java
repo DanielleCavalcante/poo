@@ -47,4 +47,8 @@ public class Quarto {
     public double getTotalFaturado() {
         return totalFaturado;
     }
+
+    public void setNumero(int numero) {
+        this.numero = numero;
+    }
 }

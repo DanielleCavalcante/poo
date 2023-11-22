@@ -12,7 +12,7 @@ public class Recepcionista extends Pessoa{
     private String turno;
     
     //ArrayList de Registro definido como atributo privado
-    private ArrayList<Registro> registro;
+    private ArrayList<Registro> registro; //1..*
 
     public Recepcionista(int regFunc, String nome) { //metodo construtor que recebe parametros do registro e nome
         super(nome);
@@ -34,7 +34,7 @@ public class Recepcionista extends Pessoa{
     
     //método addRegistro para efetivar a associação binária entre Recepcionista e Registro
     public void addRegistro(Registro registro) {
-        this.registro.add(registro);
-        registro.setRecepcionista(this); //this para simplificar a associação
+        this.registro.add(registro); //recepcionista --> registro
+        registro.setRecepcionista(this); //this para simplificar a associação binária bidirecional, registro --> recepcionista
     }
 }

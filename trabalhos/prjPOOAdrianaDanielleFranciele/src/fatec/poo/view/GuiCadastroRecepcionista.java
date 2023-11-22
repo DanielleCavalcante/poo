@@ -1,9 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package fatec.poo.view;
+
+import fatec.poo.control.Conexao;
+import fatec.poo.control.DaoRecepcionista;
+import fatec.poo.model.Recepcionista;
+
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -63,6 +64,14 @@ public class GuiCadastroRecepcionista extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Cadastro Recepcionista");
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         lblRegistroFuncional.setText("Registro Funcional");
 
@@ -72,17 +81,27 @@ public class GuiCadastroRecepcionista extends javax.swing.JFrame {
 
         lblTelefone.setText("Telefone");
 
+        txtNome.setEnabled(false);
+
+        txtEndereco.setEnabled(false);
+
+        txtTelefone.setEnabled(false);
+
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder("Turno")));
+        jPanel1.setEnabled(false);
 
         buttonGroup1.add(rdbManha);
         rdbManha.setSelected(true);
         rdbManha.setText("Manhã");
+        rdbManha.setEnabled(false);
 
         buttonGroup1.add(rdbTarde);
         rdbTarde.setText("Tarde");
+        rdbTarde.setEnabled(false);
 
         buttonGroup1.add(rdbNoite);
         rdbNoite.setText("Noite");
+        rdbNoite.setEnabled(false);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -110,18 +129,38 @@ public class GuiCadastroRecepcionista extends javax.swing.JFrame {
 
         btnConsultar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/fatec/poo/view/icon/pesq.png"))); // NOI18N
         btnConsultar.setText("Consultar");
+        btnConsultar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConsultarActionPerformed(evt);
+            }
+        });
 
         btnInserir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/fatec/poo/view/icon/add.png"))); // NOI18N
         btnInserir.setText("Inserir");
         btnInserir.setEnabled(false);
+        btnInserir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnInserirActionPerformed(evt);
+            }
+        });
 
         btnAlterar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/fatec/poo/view/icon/Alterar.png"))); // NOI18N
         btnAlterar.setText("Alterar");
         btnAlterar.setEnabled(false);
+        btnAlterar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAlterarActionPerformed(evt);
+            }
+        });
 
         btnExcluir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/fatec/poo/view/icon/rem.png"))); // NOI18N
         btnExcluir.setText("Excluir");
         btnExcluir.setEnabled(false);
+        btnExcluir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExcluirActionPerformed(evt);
+            }
+        });
 
         btnSair.setIcon(new javax.swing.ImageIcon(getClass().getResource("/fatec/poo/view/icon/exit.png"))); // NOI18N
         btnSair.setText("Sair");
@@ -205,6 +244,173 @@ public class GuiCadastroRecepcionista extends javax.swing.JFrame {
         dispose();
     }//GEN-LAST:event_btnSairActionPerformed
 
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        conexao = new Conexao("BD2213025","BD2213025"); //usuario e senha
+        conexao.setDriver("oracle.jdbc.driver.OracleDriver");
+        conexao.setConnectionString("jdbc:oracle:thin:@192.168.1.6:1521:xe");
+                                                     //192.168.1.6 -> FATEC
+        daoRecepcionista = new DaoRecepcionista(conexao.conectar());
+    }//GEN-LAST:event_formWindowOpened
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        conexao.fecharConexao();
+        dispose();
+    }//GEN-LAST:event_formWindowClosing
+
+    private void btnConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarActionPerformed
+       recepcionista = null;
+       if(txtRegistroFuncional.getText().matches("[0-9]*")){
+           recepcionista = daoRecepcionista.consultar(Integer.parseInt(txtRegistroFuncional.getText())); 
+    
+           if (recepcionista == null){//não encontrou o objeto na BD
+           txtRegistroFuncional.setEnabled(false);
+           txtNome.setEnabled(true);
+           txtNome.requestFocus();
+           txtEndereco.setEnabled(true);
+           txtTelefone.setEnabled(true);
+           jPanel1.setEnabled(true);
+           rdbManha.setEnabled(true);
+           rdbTarde.setEnabled(true);
+           rdbNoite.setEnabled(true);
+           
+           btnConsultar.setEnabled(false);
+           btnInserir.setEnabled(true);
+           btnAlterar.setEnabled(false);
+           btnExcluir.setEnabled(false);
+           
+           }
+           else{ //encontrou o objeto na BD
+            txtNome.setText(recepcionista.getNome());
+            txtEndereco.setText(recepcionista.getEndereco());
+            txtTelefone.setText(recepcionista.getTelefone());
+            if(recepcionista.getTurno().compareTo("M") == 0){
+                rdbManha.setSelected(rootPaneCheckingEnabled);
+            }else if(recepcionista.getTurno().compareTo("T") == 0){
+                rdbTarde.setSelected(rootPaneCheckingEnabled);
+            }else{
+               rdbNoite.setSelected(rootPaneCheckingEnabled);
+           }
+       
+            txtRegistroFuncional.setEnabled(false); 
+            txtNome.setEnabled(true);
+            txtNome.requestFocus();
+            txtEndereco.setEnabled(true);
+            txtTelefone.setEnabled(true);
+            jPanel1.setEnabled(true);
+            rdbManha.setEnabled(true);
+            rdbTarde.setEnabled(true);
+            rdbNoite.setEnabled(true);
+          
+            btnConsultar.setEnabled(false);
+            btnInserir.setEnabled(false);
+            btnAlterar.setEnabled(true);
+            btnExcluir.setEnabled(true);
+            }
+        }
+        else{
+           JOptionPane.showMessageDialog(null, "Registro inválido! Tente novamente!");
+           txtRegistroFuncional.setText(null);
+           txtRegistroFuncional.requestFocus();
+        }
+    }//GEN-LAST:event_btnConsultarActionPerformed
+
+    private void btnInserirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInserirActionPerformed
+        recepcionista = new Recepcionista(Integer.parseInt(txtRegistroFuncional.getText()),txtNome.getText());
+        recepcionista.setEndereco(txtEndereco.getText());
+        recepcionista.setTelefone(txtTelefone.getText());
+        if(rdbManha.isSelected() == true){
+            recepcionista.setTurno("M");
+        }else if(rdbTarde.isSelected() == true){
+            recepcionista.setTurno("T");
+        }else {
+            recepcionista.setTurno("N");
+        }
+        daoRecepcionista.inserir(recepcionista);
+         
+        txtRegistroFuncional.setText(""); //inserir o registro funcional no BD
+        txtNome.setText(""); //inserir o nome no BD
+        txtEndereco.setText(""); //inserir o endereço no BD
+        txtTelefone.setText(""); //inserir o telefone no BD
+        
+        
+        txtRegistroFuncional.setEnabled(true);
+        txtNome.setEnabled(false);
+        txtRegistroFuncional.requestFocus();
+        txtEndereco.setEnabled(false);
+        txtTelefone.setEnabled(false);
+        jPanel1.setEnabled(false);
+        rdbManha.setEnabled(false);
+        rdbManha.setSelected(true);
+        rdbTarde.setEnabled(false);
+        rdbNoite.setEnabled(false);
+        btnConsultar.setEnabled(true);
+        btnInserir.setEnabled(false);
+        btnAlterar.setEnabled(false);
+        btnExcluir.setEnabled(false);
+    }//GEN-LAST:event_btnInserirActionPerformed
+
+    private void btnAlterarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAlterarActionPerformed
+        if (JOptionPane.showConfirmDialog(null, "Confirma Alteração?")== 0){    //Sim
+           recepcionista = new Recepcionista(Integer.parseInt(txtRegistroFuncional.getText()),txtNome.getText());
+           recepcionista.setEndereco(txtEndereco.getText());
+           recepcionista.setTelefone(txtTelefone.getText());
+           if(rdbManha.isSelected() == true){
+            recepcionista.setTurno("M");
+            }else if(rdbTarde.isSelected() == true){
+                recepcionista.setTurno("T");
+            }else {
+                recepcionista.setTurno("N");
+            }
+           daoRecepcionista.alterar(recepcionista);
+        }
+        
+        txtRegistroFuncional.setText("");
+        txtNome.setText("");
+        txtEndereco.setText("");
+        txtTelefone.setText("");
+        rdbManha.setSelected(rootPaneCheckingEnabled);
+        jPanel1.setEnabled(false);
+        rdbManha.setEnabled(false);
+        rdbManha.setSelected(true);
+        rdbTarde.setEnabled(false);
+        rdbNoite.setEnabled(false);
+        txtRegistroFuncional.setEnabled(true); 
+        txtNome.setEnabled(false);
+        txtRegistroFuncional.requestFocus();
+        txtEndereco.setEnabled(false);
+        txtTelefone.setEnabled(false);
+        btnConsultar.setEnabled(true);
+        btnInserir.setEnabled(false);
+        btnAlterar.setEnabled(false);
+        btnExcluir.setEnabled(false); 
+    }//GEN-LAST:event_btnAlterarActionPerformed
+
+    private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
+            if (JOptionPane.showConfirmDialog(null, "Confirma Exclusão?") == 0){
+            daoRecepcionista.excluir(recepcionista); 
+            
+            txtRegistroFuncional.setText("");
+            txtNome.setText("");
+            txtEndereco.setText("");
+            txtTelefone.setText("");
+            rdbManha.setSelected(rootPaneCheckingEnabled);
+            txtRegistroFuncional.setEnabled(true); 
+            txtNome.setEnabled(false);
+            txtEndereco.setEnabled(false);
+            txtTelefone.setEnabled(false);
+            jPanel1.setEnabled(false);
+            rdbManha.setEnabled(false);
+            rdbManha.setSelected(true);
+            rdbTarde.setEnabled(false);
+            rdbNoite.setEnabled(false);
+            txtRegistroFuncional.requestFocus();
+            btnConsultar.setEnabled(true);
+            btnInserir.setEnabled(false);
+            btnAlterar.setEnabled(false);
+            btnExcluir.setEnabled(false);
+        } 
+    }//GEN-LAST:event_btnExcluirActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAlterar;
@@ -228,4 +434,7 @@ public class GuiCadastroRecepcionista extends javax.swing.JFrame {
     private javax.swing.JTextField txtRegistroFuncional;
     private javax.swing.JTextField txtTelefone;
     // End of variables declaration//GEN-END:variables
+    private DaoRecepcionista daoRecepcionista=null;
+    private Recepcionista recepcionista=null;
+    private Conexao conexao=null;
 }

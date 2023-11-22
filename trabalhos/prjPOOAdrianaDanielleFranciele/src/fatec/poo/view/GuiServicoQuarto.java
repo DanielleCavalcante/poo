@@ -1,9 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package fatec.poo.view;
+
+import fatec.poo.control.Conexao;
+import fatec.poo.control.DaoServicoQuarto;
+import fatec.poo.model.ServicoQuarto;
+
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -41,6 +42,14 @@ public class GuiServicoQuarto extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Cadastro Serviço de Quarto");
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         lblCodigo.setText("Código");
 
@@ -48,22 +57,45 @@ public class GuiServicoQuarto extends javax.swing.JFrame {
 
         lblValor.setText("Valor");
 
+        txtValor.setEnabled(false);
+
         cbxDescricao.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Água", "Doce", "Lanche", "Refrigerante", "Salgado" }));
+        cbxDescricao.setEnabled(false);
 
         btnConsultar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/fatec/poo/view/icon/pesq.png"))); // NOI18N
         btnConsultar.setText("Consultar");
+        btnConsultar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConsultarActionPerformed(evt);
+            }
+        });
 
         btnInserir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/fatec/poo/view/icon/add.png"))); // NOI18N
         btnInserir.setText("Inserir");
         btnInserir.setEnabled(false);
+        btnInserir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnInserirActionPerformed(evt);
+            }
+        });
 
         btnAlterar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/fatec/poo/view/icon/Alterar.png"))); // NOI18N
         btnAlterar.setText("Alterar");
         btnAlterar.setEnabled(false);
+        btnAlterar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAlterarActionPerformed(evt);
+            }
+        });
 
         btnExcluir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/fatec/poo/view/icon/rem.png"))); // NOI18N
         btnExcluir.setText("Excluir");
         btnExcluir.setEnabled(false);
+        btnExcluir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExcluirActionPerformed(evt);
+            }
+        });
 
         btnSair.setIcon(new javax.swing.ImageIcon(getClass().getResource("/fatec/poo/view/icon/exit.png"))); // NOI18N
         btnSair.setText("Sair");
@@ -135,6 +167,123 @@ public class GuiServicoQuarto extends javax.swing.JFrame {
         dispose();
     }//GEN-LAST:event_btnSairActionPerformed
 
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        conexao = new Conexao("BD2213025","BD2213025");//usuario e senha
+        conexao.setDriver("oracle.jdbc.driver.OracleDriver");
+        conexao.setConnectionString("jdbc:oracle:thin:@192.168.1.6:1521:xe");
+                                                      //192.168.1.6 -> FATEC
+        daoServicoQuarto = new DaoServicoQuarto(conexao.conectar());
+    }//GEN-LAST:event_formWindowOpened
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        conexao.fecharConexao();
+        dispose();
+    }//GEN-LAST:event_formWindowClosing
+
+    private void btnConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarActionPerformed
+        servicoQuarto = null;
+        if(txtCodigo.getText().matches("[0-9]*")){
+        servicoQuarto = daoServicoQuarto.consultar(Integer.parseInt(txtCodigo.getText()));
+        
+            if (servicoQuarto == null){//não encontrou o objeto no BD
+               txtCodigo.setEnabled(false);
+               cbxDescricao.setEnabled(true);
+               txtValor.setEnabled(true);
+
+               cbxDescricao.requestFocus(); 
+
+               btnConsultar.setEnabled(false);
+               btnInserir.setEnabled(true);
+               btnAlterar.setEnabled(false);
+               btnExcluir.setEnabled(false);
+           }
+           else{ //encontrou o objeto no BD
+              cbxDescricao.setSelectedItem(servicoQuarto.getDescricao());
+              txtValor.setText(String.valueOf(servicoQuarto.getValor()));
+
+              txtCodigo.setEnabled(false); 
+              cbxDescricao.setEnabled(true);
+              txtValor.setEnabled(true);
+              cbxDescricao.requestFocus();
+
+              btnConsultar.setEnabled(false);
+              btnInserir.setEnabled(false);
+              btnAlterar.setEnabled(true);
+              btnExcluir.setEnabled(true);
+           } 
+       }
+        else{ //<> de inteiro
+          JOptionPane.showMessageDialog(null, "Código do Serviço inválido! Digite um valor numérico inteiro!");
+          txtCodigo.setText(null);
+          txtCodigo.requestFocus();
+       }
+    }//GEN-LAST:event_btnConsultarActionPerformed
+
+    private void btnInserirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInserirActionPerformed
+        servicoQuarto = new ServicoQuarto(Integer.parseInt(txtCodigo.getText()),(String)cbxDescricao.getSelectedItem());
+        servicoQuarto.setValor(Double.parseDouble(txtValor.getText())); // inserir o o atributo valor que não está no construtor
+        daoServicoQuarto.inserir(servicoQuarto);//dados são inseridos
+         
+        txtCodigo.setText("");
+        cbxDescricao.setSelectedIndex(0); //deixar na primeira posicao
+        txtValor.setText("");
+        
+        btnInserir.setEnabled(false); //desabilitar inserir
+        
+        txtCodigo.setEnabled(true); 
+        cbxDescricao.setEnabled(false);
+        txtValor.setEnabled(false);
+        txtCodigo.requestFocus();
+        
+        btnConsultar.setEnabled(true);
+        btnInserir.setEnabled(false);
+        btnAlterar.setEnabled(false);
+        btnExcluir.setEnabled(false);
+    }//GEN-LAST:event_btnInserirActionPerformed
+
+    private void btnAlterarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAlterarActionPerformed
+        if (JOptionPane.showConfirmDialog(null, "Confirma Alteração?")== 0){    //Sim
+           servicoQuarto = new ServicoQuarto(Integer.parseInt(txtCodigo.getText()),(String)cbxDescricao.getSelectedItem()); //acrescentei o Construtor
+           servicoQuarto.setValor(Double.parseDouble(txtValor.getText()));
+           daoServicoQuarto.alterar(servicoQuarto); //alterar no banco
+        }         
+        txtCodigo.setText("");
+        cbxDescricao.setSelectedIndex(0);  
+        txtValor.setText("");
+        
+        txtCodigo.setEnabled(true); 
+        cbxDescricao.setEnabled(false);
+        txtValor.setEnabled(false);
+        
+        
+        txtCodigo.requestFocus();
+        
+        btnConsultar.setEnabled(true);
+        btnInserir.setEnabled(false);
+        btnAlterar.setEnabled(false);
+        btnExcluir.setEnabled(false);  
+    }//GEN-LAST:event_btnAlterarActionPerformed
+
+    private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
+        if (JOptionPane.showConfirmDialog(null, "Confirma Exclusão?") == 0){
+            daoServicoQuarto.excluir(servicoQuarto); //excluir do banco 
+            
+            txtCodigo.setText(""); //limpar campos
+            cbxDescricao.setSelectedIndex(0);
+            txtValor.setText("");
+            
+            txtCodigo.setEnabled(true); 
+            cbxDescricao.setEnabled(false);
+            txtValor.setEnabled(false);
+            
+            txtCodigo.requestFocus();
+            
+            btnConsultar.setEnabled(true);
+            btnInserir.setEnabled(false);
+            btnAlterar.setEnabled(false);
+            btnExcluir.setEnabled(false);
+        }   
+    }//GEN-LAST:event_btnExcluirActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAlterar;
@@ -149,4 +298,7 @@ public class GuiServicoQuarto extends javax.swing.JFrame {
     private javax.swing.JTextField txtCodigo;
     private javax.swing.JTextField txtValor;
     // End of variables declaration//GEN-END:variables
+    private DaoServicoQuarto daoServicoQuarto=null;
+    private ServicoQuarto servicoQuarto=null;
+    private Conexao conexao=null;
 }

@@ -5,6 +5,8 @@
  */
 package fatec.poo.view;
 
+import.fatec.poo.model.Registro;
+
 /**
  *
  * @author Adriana, Danielle e Franciele
@@ -51,6 +53,7 @@ public class GuiReservaLiberacao extends javax.swing.JFrame {
         btnBuscaRegistroFuncional = new javax.swing.JButton();
         btnBuscaCPFHospede = new javax.swing.JButton();
         btnBuscaSituacao = new javax.swing.JButton();
+        btnConsultar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Registro Hospedagem");
@@ -111,6 +114,14 @@ public class GuiReservaLiberacao extends javax.swing.JFrame {
 
         btnBuscaSituacao.setText("...");
 
+        btnConsultar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/fatec/poo/view/icon/pesq.png"))); // NOI18N
+        btnConsultar.setText("Consultar");
+        btnConsultar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConsultarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -131,29 +142,20 @@ public class GuiReservaLiberacao extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtRegistroFuncional, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtCPFHospede, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 78, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 108, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnBuscaCPFHospede)
+                            .addComponent(btnBuscaRegistroFuncional)
+                            .addComponent(lblSituacao))
+                        .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnReservar)
+                                .addComponent(btnBuscaSituacao)
                                 .addGap(18, 18, 18)
-                                .addComponent(btnLiberar)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnSair))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(30, 30, 30)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(btnBuscaCPFHospede)
-                                    .addComponent(btnBuscaRegistroFuncional)
-                                    .addComponent(lblSituacao))
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(btnBuscaSituacao)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(txtSituacao, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(txtBuscaRegistroFuncional, javax.swing.GroupLayout.DEFAULT_SIZE, 347, Short.MAX_VALUE)
-                                        .addComponent(txtBuscaCPFHospede)))))
+                                .addComponent(txtSituacao, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(txtBuscaRegistroFuncional, javax.swing.GroupLayout.DEFAULT_SIZE, 347, Short.MAX_VALUE)
+                                .addComponent(txtBuscaCPFHospede)))
                         .addGap(33, 33, 33))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -163,7 +165,17 @@ public class GuiReservaLiberacao extends javax.swing.JFrame {
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addComponent(txtDataSaida, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE)
                                 .addComponent(txtDataEntrada, javax.swing.GroupLayout.Alignment.LEADING)))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 203, Short.MAX_VALUE)
+                        .addComponent(btnConsultar)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnReservar)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnLiberar)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnSair)
+                        .addGap(74, 74, 74))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -178,26 +190,26 @@ public class GuiReservaLiberacao extends javax.swing.JFrame {
                     .addComponent(txtRegistroFuncional, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtBuscaRegistroFuncional, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnBuscaRegistroFuncional))
-                .addGap(27, 27, 27)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblCPFHospede)
-                    .addComponent(txtCPFHospede, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtBuscaCPFHospede, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnBuscaCPFHospede))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
+                        .addGap(27, 27, 27)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(lblSituacao)
-                            .addComponent(txtSituacao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnBuscaSituacao))
-                        .addGap(33, 33, 33))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                            .addComponent(lblCPFHospede)
+                            .addComponent(txtCPFHospede, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnBuscaCPFHospede))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblNQuarto)
-                            .addComponent(txtNQuarto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(25, 25, 25)))
+                            .addComponent(txtNQuarto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(32, 32, 32)
+                        .addComponent(txtBuscaCPFHospede, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblSituacao)
+                            .addComponent(txtSituacao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnBuscaSituacao))))
+                .addGap(25, 25, 25)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lblDataEntrada)
@@ -209,11 +221,12 @@ public class GuiReservaLiberacao extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblValorHospedagem)
                             .addComponent(txtValorHospedagem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnSair)
                             .addComponent(btnLiberar)
-                            .addComponent(btnReservar))
+                            .addComponent(btnReservar)
+                            .addComponent(btnConsultar))
                         .addGap(27, 27, 27))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(txtDataEntrada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -227,11 +240,61 @@ public class GuiReservaLiberacao extends javax.swing.JFrame {
         dispose();
     }//GEN-LAST:event_btnSairActionPerformed
 
+    private void btnConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarActionPerformed
+        // Obtenha o CPF do campo de texto
+        codigo=null;
+
+        String codigo = txtCodigo.getText();
+
+        if (cpfValido) {
+            //hospede = null;
+
+            hospede = daoHospede.consultar(cpf);
+
+            if (hospede == null) { // não encontrou o objeto na BD
+                txtCPF.setEnabled(false);
+                txtNome.setEnabled(true);
+                txtEndereco.setEnabled(true);
+                txtTelefone.setEnabled(true);
+                txtTaxaDesconto.setEnabled(true);
+                txtNome.requestFocus();
+
+                btnConsultar.setEnabled(false);
+                btnInserir.setEnabled(true);
+                btnAlterar.setEnabled(false);
+                btnExcluir.setEnabled(false);
+            } else { // encontrou o objeto na BD
+                txtNome.setText(hospede.getNome());
+                txtEndereco.setText(hospede.getEndereco());
+                txtTelefone.setText(hospede.getTelefone());
+                txtTaxaDesconto.setText(String.valueOf(hospede.getTaxaDesconto())); //valueOf para transformar o valor em string
+
+                txtCPF.setEnabled(false);
+                txtNome.setEnabled(true);
+                txtEndereco.setEnabled(true);
+                txtTelefone.setEnabled(true);
+                txtTaxaDesconto.setEnabled(true);
+                txtNome.requestFocus();
+
+                btnConsultar.setEnabled(false);
+                btnInserir.setEnabled(false);
+                btnAlterar.setEnabled(true);
+                btnExcluir.setEnabled(true);
+            }
+        } else {
+            // CPF inválido, exiba uma mensagem de advertência
+            JOptionPane.showMessageDialog(null, "CPF inválido! Digite um CPF válido.");
+            txtCPF.setText(null);
+            txtCPF.requestFocus();
+        }
+    }//GEN-LAST:event_btnConsultarActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuscaCPFHospede;
     private javax.swing.JButton btnBuscaRegistroFuncional;
     private javax.swing.JButton btnBuscaSituacao;
+    private javax.swing.JButton btnConsultar;
     private javax.swing.JButton btnLiberar;
     private javax.swing.JButton btnReservar;
     private javax.swing.JButton btnSair;
@@ -254,4 +317,7 @@ public class GuiReservaLiberacao extends javax.swing.JFrame {
     private javax.swing.JTextField txtSituacao;
     private javax.swing.JTextField txtValorHospedagem;
     // End of variables declaration//GEN-END:variables
+    private DaoRegistro daRegistro=null;
+    private Registro registro=null;
+    private Conexao conexao=null;
 }
