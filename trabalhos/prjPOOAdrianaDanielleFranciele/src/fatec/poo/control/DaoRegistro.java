@@ -6,7 +6,13 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 
 import fatec.poo.model.Registro;
+import fatec.poo.model.Recepcionista;
+import fatec.poo.model.Hospede;
+import fatec.poo.model.Quarto;
+import java.sql.Date;
 import java.time.LocalDate;
+import java.time.ZoneId;
+
 
 /**
  *
@@ -20,73 +26,76 @@ public class DaoRegistro {
     }
     
     //ações no banco de dados da classe hospede:
-    public void inserir(Hospede hospede) {
-        PreparedStatement ps = null;
-        try {
-            ps = conn.prepareStatement("INSERT INTO tbHOSPEDE(CPF_HOSP, NOME_HOSP, ENDERECO_HOSP, TELEFONE_HOSP,TAXA_DESCONTO) VALUES(?,?,?,?,?)");
-            ps.setString(1, hospede.getCpf());
-            ps.setString(2, hospede.getNome());
-            ps.setString(3, hospede.getEndereco());
-            ps.setString(4, hospede.getTelefone());
-            ps.setDouble(5, hospede.getTaxaDesconto());
-                      
-            ps.execute();
-        } catch (SQLException ex) {
-             System.out.println(ex.toString());   
-        }
-    }
-    
-    public void alterar(Hospede hospede) {
-        PreparedStatement ps = null;
-        try {
-            ps = conn.prepareStatement("UPDATE tbHOSPEDE set NOME_HOSP = ?, ENDERECO_HOSP = ?, TELEFONE_HOSP = ?, TAXA_DESCONTO = ?" + "where CPF_HOSP = ?");
-            
-            ps.setString(1, hospede.getNome());
-            ps.setString(2, hospede.getEndereco());
-            ps.setString(3, hospede.getTelefone());
-            ps.setDouble(4, hospede.getTaxaDesconto());
-            ps.setString(5, hospede.getCpf());
-           
-            ps.execute();
-        } catch (SQLException ex) {
-             System.out.println(ex.toString());   
-        }
-    }
     
     public  Registro consultar (int codigo) {
         Registro reg= null;
        
         PreparedStatement ps = null;
         try {
-            ps = conn.prepareStatement("SELECT * from tbREGISTRO where " +
-                                                 "CODIGO = ?");
+            ps = conn.prepareStatement("SELECT r.REG_FUNC_RECEPCIONISTA, r.CPF_HOSPEDE, r.NUMERO_QUARTO, r.DATA_ENTRADA, r.DATA_SAIDA, r.VALOR_HOSP " +
+                                   "FROM tbREGISTRO r " + "WHERE r.CODIGO = ?");
             
             ps.setInt(1, codigo);
             ResultSet rs = ps.executeQuery();
            
             if (rs.next() == true) {
-                reg = new Registro(codigo, rs.getDate("DATA_ENTRADA").toLocalDate(), rs.getString("REG_FUNC_RECEPCIONISTA")); //
-                reg.setEndereco(rs.getString("ENDERECO_HOSP")); //outros valores
-                reg.setTelefone(rs.getString("TELEFONE_HOSP"));
-                reg.setTaxaDesconto(rs.getDouble("TAXA_DESCONTO"));
+                //instanciando recepcionista para poder acessar os atributos
+                Recepcionista recepcionista = new Recepcionista(rs.getInt("NUMERO_IDENTIFICACAO"), rs.getString("REG_FUNC_RECEPCIONISTA"));                
+                
+                Hospede hospede = new Hospede(rs.getString("CPF_HOSP"), rs.getString("NOME_HOSP")); //construtor - nome não é utilizado aqui
+                reg.setHospede(hospede);
+                
+                Quarto quarto = new Quarto(rs.getInt("NUM_QUARTO"), rs.getString("TIPO_QUARTO"), rs.getDouble("VALORDIARIA_QUARTO")); //só utilizamos numQuarto
+                reg.setQuarto(quarto);
+                
+                reg = new Registro(codigo, rs.getDate("DATA_ENTRADA").toLocalDate(), recepcionista); // construtor
+                reg.setDataSaida(rs.getDate("DATA_SAIDA").toLocalDate());
+                reg.setValorHospedagem(rs.getDouble("VALOR_HOSP"));
             }
         }
         catch (SQLException ex) { 
              System.out.println(ex.toString());   
         }
-        return (h);
+        return (reg);
     }   
     
-    public void excluir(Hospede hospede) {
+    public void reservar(Registro registro) {
         PreparedStatement ps = null;
+        
         try {
-            ps = conn.prepareStatement("DELETE FROM tbHOSPEDE where CPF_HOSP = ?");
+            int situacao = 1;
             
-            ps.setString(1, hospede.getCpf());
+            ps = conn.prepareStatement("UPDATE tbREGISTRO set DATA_ENTRADA = ?, VALOR_HOSP = ?, CPF_HOSPEDE = ?, REG_FUNC_RECEPCIONISTA = ?,"+
+                                        " NUMERO_QUARTO = ?, SITUACAO_QUARTO = ?" + "where CODIGO = ?"); //INSERE O CÓDIGO DO REGISTRO
+            
+            ps.setDate(1, Date.valueOf(registro.getDataEntrada()));
+            ps.setDouble(2, registro.getQuarto().getValorDiaria());
+            ps.setString(3, registro.getHospede().getCpf());
+            ps.setInt(4, registro.getRecepcionista().getRegFunc());
+            ps.setInt(5, registro.getQuarto().getNumero());
+            ps.setInt(6, situacao);
+            ps.setInt(7, registro.getCodigo());
                       
             ps.execute();
         } catch (SQLException ex) {
              System.out.println(ex.toString());   
         }
     }
+    
+    public void liberar(Registro registro) {
+        PreparedStatement ps = null;
+        try {           
+            int situacao = 0; //quarto 0 é livre e 1 é ocupado
+            
+            ps = conn.prepareStatement("UPDATE tbREGISTRO SET SITUACAO_QUARTO = ? WHERE CODIGO = ?"); //MUDA O VALOR DE SITUAÇÃO DO QUARTO
+                        
+            ps.setInt(1, situacao);
+            ps.setInt(2, registro.getCodigo());
+         
+            ps.execute();
+        } catch (SQLException ex) {
+             System.out.println(ex.toString());   
+        }
+    }
+   
 }

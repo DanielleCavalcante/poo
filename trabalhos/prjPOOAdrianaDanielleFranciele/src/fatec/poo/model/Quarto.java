@@ -51,4 +51,8 @@ public class Quarto {
     public void setNumero(int numero) {
         this.numero = numero;
     }
+
+    public void setSituacao(boolean situacao) {
+        this.situacao = situacao;
+    }
 }

@@ -37,7 +37,8 @@ public class Hospede extends Pessoa {
     
     // AddRegistro
     public void addRegistro(Registro r) {
-    registro.add(r); //usar o this
+      registro.add(r); //usar o this
+      r.setHospede(this);
     }
     
     public static boolean validarCPF(String cpf) {

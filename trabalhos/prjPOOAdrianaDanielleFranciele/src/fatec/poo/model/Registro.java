@@ -29,10 +29,21 @@ public class Registro{
     public void setDataSaida(LocalDate dataSaida) {
         this.dataSaida = dataSaida;
     }
-
-   
+    
     public void setRecepcionista(Recepcionista recepcionista) { //para poder usar no addRegistro da classe recepcionista
         this.recepcionista = recepcionista;
+    }
+    
+    public void setHospede(Hospede hospede) {
+        this.hospede = hospede;
+    }
+
+    public void setQuarto(Quarto quarto) {
+        this.quarto = quarto;
+    }
+
+    public void setValorHospedagem(double valorHospedagem) {
+        this.valorHospedagem = valorHospedagem;
     }
 
     public int getCodigo() {
@@ -45,10 +56,6 @@ public class Registro{
 
     public LocalDate getDataSaida() {
         return dataSaida;
-    }
-
-    public double getValorHospedagem() {
-        return valorHospedagem;
     }
     
     //métodos get's para Hospede, Recepcionista e Quarto
@@ -71,7 +78,7 @@ public class Registro{
         quarto.reservar();
     }
     
-    public double liberarQuarto(){
+    public double liberarQuarto(){   
         int diasHospedagem = dataEntrada.until(dataSaida).getDays();
         
         valorHospedagem = quarto.liberar(diasHospedagem); //o método liberar já retorna o valor da hospedagem, não precisa calcular de novo

@@ -1,11 +1,20 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package fatec.poo.view;
 
-import.fatec.poo.model.Registro;
+import fatec.poo.control.Conexao;
+import fatec.poo.control.DaoRegistro;
+import fatec.poo.model.Recepcionista;
+import fatec.poo.control.DaoRecepcionista;
+import fatec.poo.model.Registro;
+import fatec.poo.control.DaoQuarto;
+import fatec.poo.model.Quarto;
+import fatec.poo.control.DaoHospede;
+import fatec.poo.model.Hospede;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
+
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -57,6 +66,14 @@ public class GuiReservaLiberacao extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Registro Hospedagem");
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         lblCodigo.setText("Código");
 
@@ -73,14 +90,37 @@ public class GuiReservaLiberacao extends javax.swing.JFrame {
         lblValorHospedagem.setText("Valor Hospedagem");
 
         lblSituacao.setText("Situação");
+        lblSituacao.setEnabled(false);
+
+        txtRegistroFuncional.setEnabled(false);
+
+        txtNQuarto.setEnabled(false);
+
+        txtValorHospedagem.setEnabled(false);
+
+        txtBuscaRegistroFuncional.setEnabled(false);
+
+        txtBuscaCPFHospede.setEnabled(false);
+
+        txtSituacao.setEnabled(false);
 
         btnReservar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/fatec/poo/view/icon/save.png"))); // NOI18N
         btnReservar.setText("Reservar");
         btnReservar.setEnabled(false);
+        btnReservar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnReservarActionPerformed(evt);
+            }
+        });
 
         btnLiberar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/fatec/poo/view/icon/rem.png"))); // NOI18N
         btnLiberar.setText("Liberar");
         btnLiberar.setEnabled(false);
+        btnLiberar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLiberarActionPerformed(evt);
+            }
+        });
 
         btnSair.setIcon(new javax.swing.ImageIcon(getClass().getResource("/fatec/poo/view/icon/exit.png"))); // NOI18N
         btnSair.setText("Sair");
@@ -95,24 +135,45 @@ public class GuiReservaLiberacao extends javax.swing.JFrame {
         } catch (java.text.ParseException ex) {
             ex.printStackTrace();
         }
+        txtCPFHospede.setEnabled(false);
 
         try {
             txtDataEntrada.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("##/##/####")));
         } catch (java.text.ParseException ex) {
             ex.printStackTrace();
         }
+        txtDataEntrada.setEnabled(false);
 
         try {
             txtDataSaida.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("##/##/####")));
         } catch (java.text.ParseException ex) {
             ex.printStackTrace();
         }
+        txtDataSaida.setEnabled(false);
 
         btnBuscaRegistroFuncional.setText("...");
+        btnBuscaRegistroFuncional.setEnabled(false);
+        btnBuscaRegistroFuncional.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscaRegistroFuncionalActionPerformed(evt);
+            }
+        });
 
         btnBuscaCPFHospede.setText("...");
+        btnBuscaCPFHospede.setEnabled(false);
+        btnBuscaCPFHospede.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscaCPFHospedeActionPerformed(evt);
+            }
+        });
 
         btnBuscaSituacao.setText("...");
+        btnBuscaSituacao.setEnabled(false);
+        btnBuscaSituacao.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscaSituacaoActionPerformed(evt);
+            }
+        });
 
         btnConsultar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/fatec/poo/view/icon/pesq.png"))); // NOI18N
         btnConsultar.setText("Consultar");
@@ -241,53 +302,162 @@ public class GuiReservaLiberacao extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSairActionPerformed
 
     private void btnConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarActionPerformed
-        // Obtenha o CPF do campo de texto
-        codigo=null;
 
-        String codigo = txtCodigo.getText();
+        registro = null;
 
-        if (cpfValido) {
-            //hospede = null;
+        if(txtCodigo.getText().matches("[0-9]*")){ //valor digitao é inteiro
+            registro = daoRegistro.consultar(Integer.parseInt(txtCodigo.getText()));
+        
+            if (registro == null){//não encontrou o objeto no BD
+               txtCodigo.setEnabled(false);
+               txtRegistroFuncional.setEnabled(true);
+               btnBuscaRegistroFuncional.setEnabled(true);
+               txtBuscaRegistroFuncional.setEnabled(false);
+               txtCPFHospede.setEnabled(false);
+               btnBuscaCPFHospede.setEnabled(false);
+               txtBuscaCPFHospede.setEnabled(false);
+               txtNQuarto.setEnabled(false);
+               btnBuscaSituacao.setEnabled(false);
+               txtSituacao.setEnabled(false);
+               txtDataEntrada.setEnabled(false);
+               txtDataSaida.setEnabled(false);
+               txtValorHospedagem.setEnabled(false);
 
-            hospede = daoHospede.consultar(cpf);
+               btnConsultar.setEnabled(false);
+               btnReservar.setEnabled(true);
+           }
+           else{ //encontrou o objeto no BD
+                
+              txtRegistroFuncional.setText(String.valueOf(registro.getRecepcionista()));
+              txtCPFHospede.setText(String.valueOf(registro.getHospede()));
+              txtNQuarto.setText(String.valueOf(registro.getQuarto()));
+              txtDataEntrada.setText(String.valueOf(registro.getDataEntrada()));
+              txtDataSaida.setText(String.valueOf(registro.getDataEntrada()));
 
-            if (hospede == null) { // não encontrou o objeto na BD
-                txtCPF.setEnabled(false);
-                txtNome.setEnabled(true);
-                txtEndereco.setEnabled(true);
-                txtTelefone.setEnabled(true);
-                txtTaxaDesconto.setEnabled(true);
-                txtNome.requestFocus();
-
-                btnConsultar.setEnabled(false);
-                btnInserir.setEnabled(true);
-                btnAlterar.setEnabled(false);
-                btnExcluir.setEnabled(false);
-            } else { // encontrou o objeto na BD
-                txtNome.setText(hospede.getNome());
-                txtEndereco.setText(hospede.getEndereco());
-                txtTelefone.setText(hospede.getTelefone());
-                txtTaxaDesconto.setText(String.valueOf(hospede.getTaxaDesconto())); //valueOf para transformar o valor em string
-
-                txtCPF.setEnabled(false);
-                txtNome.setEnabled(true);
-                txtEndereco.setEnabled(true);
-                txtTelefone.setEnabled(true);
-                txtTaxaDesconto.setEnabled(true);
-                txtNome.requestFocus();
-
-                btnConsultar.setEnabled(false);
-                btnInserir.setEnabled(false);
-                btnAlterar.setEnabled(true);
-                btnExcluir.setEnabled(true);
-            }
-        } else {
-            // CPF inválido, exiba uma mensagem de advertência
-            JOptionPane.showMessageDialog(null, "CPF inválido! Digite um CPF válido.");
-            txtCPF.setText(null);
-            txtCPF.requestFocus();
-        }
+              txtCodigo.setEnabled(false); 
+              btnConsultar.setEnabled(false);
+              
+              if(txtDataSaida == null){
+                  btnLiberar.setEnabled(true);
+                  txtDataSaida.setEnabled(true);
+                  txtDataSaida.requestFocus();
+              }else{
+                  try { //data válida:
+                    LocalDate.parse(txtDataSaida.getText(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                  }catch (DateTimeParseException e) { //data inválida:
+                    JOptionPane.showMessageDialog(null, "Data inválida! Digite novamente.");
+                    txtDataSaida.setText(null);
+                    txtDataSaida.requestFocus();
+                }
+              }
+           } 
+       }
+        else{ //<> de inteiro
+          JOptionPane.showMessageDialog(null, "Código de Registro inválido! Digite novamente.");
+          txtCodigo.setText(null);
+          txtCodigo.requestFocus();
+       }
     }//GEN-LAST:event_btnConsultarActionPerformed
+                                        
+    private void btnBuscaRegistroFuncionalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscaRegistroFuncionalActionPerformed
+        daoRecepcionista = new DaoRecepcionista(conexao.conectar());
+        recepcionista = daoRecepcionista.consultar(Integer.parseInt(txtRegistroFuncional.getText()));
+        //INSTANCIAR OBJ REGISTRO AQUI 
+        registro = new Registro(Integer.parseInt(txtCodigo.getText()), LocalDate.parse(txtDataEntrada.getText()), recepcionista);
+        
+        if (recepcionista == null){//não encontrou o objeto na BD
+            JOptionPane.showMessageDialog(null, "Recepcionista não cadastrado!");
+            txtRegistroFuncional.setText(null);
+            txtRegistroFuncional.requestFocus();
+        }
+        else{ //encontrou o objeto na BD
+            txtBuscaRegistroFuncional.setEnabled(true);
+            txtBuscaRegistroFuncional.setText(recepcionista.getNome());
+            
+            txtRegistroFuncional.setEnabled(false); 
+            txtCPFHospede.setEnabled(true);
+          
+            btnConsultar.setEnabled(false);
+            btnBuscaCPFHospede.setEnabled(true);
+        }
+    }//GEN-LAST:event_btnBuscaRegistroFuncionalActionPerformed
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        conexao = new Conexao("BD2213025","BD2213025"); //usuario e senha
+        conexao.setDriver("oracle.jdbc.driver.OracleDriver");
+        conexao.setConnectionString("jdbc:oracle:thin:@192.168.1.6:1521:xe");
+                                                     //192.168.1.6 -> FATEC
+        daoRegistro = new DaoRegistro(conexao.conectar());
+        daoQuarto = new DaoQuarto(conexao.conectar());
+    }//GEN-LAST:event_formWindowOpened
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        conexao.fecharConexao();
+        dispose();
+    }//GEN-LAST:event_formWindowClosing
+
+    private void btnReservarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReservarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnReservarActionPerformed
+
+    private void btnLiberarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLiberarActionPerformed
+        //txtValorHospedagem.setText(String.valueOf(quarto.liberar(registro.getDataEntrada().until(registro.getDataSaida(), ChronoUnit.DAYS))));
+        txtValorHospedagem.setText(String.valueOf(registro.liberarQuarto()));
+        
+        registro = new Registro(Integer.parseInt(txtCodigo.getText()), LocalDate.parse(txtDataEntrada.getText()), recepcionista);
+        daoRegistro.liberar(registro);  
+    }//GEN-LAST:event_btnLiberarActionPerformed
+
+    private void btnBuscaCPFHospedeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscaCPFHospedeActionPerformed
+        daoHospede = new DaoHospede(conexao.conectar());
+        hospede = daoHospede.consultar(txtCPFHospede.getText());
+        //INSTANCIAR OBJ REGISTRO AQUI 
+        registro = new Registro(Integer.parseInt(txtCodigo.getText()), LocalDate.parse(txtDataEntrada.getText()), recepcionista);
+        
+       if (hospede == null){//não encontrou o objeto na BD
+            JOptionPane.showMessageDialog(null, "Hospede não cadastrado!");
+            txtCPFHospede.setText(null);
+            txtCPFHospede.requestFocus();
+        }
+        else{ //encontrou o objeto na BD
+            txtBuscaCPFHospede.setEnabled(true); 
+            txtBuscaCPFHospede.setText(hospede.getNome());
+            hospede.addRegistro(registro);
+            
+            txtCPFHospede.setEnabled(false); 
+            txtNQuarto.setEnabled(true);
+          
+            btnBuscaCPFHospede.setEnabled(false);
+            btnBuscaSituacao.setEnabled(true);
+        }
+    }//GEN-LAST:event_btnBuscaCPFHospedeActionPerformed
+
+    private void btnBuscaSituacaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscaSituacaoActionPerformed
+        quarto = daoQuarto.consultar(Integer.parseInt(txtNQuarto.getText()));
+        //INSTANCIAR OBJ REGISTRO AQUI 
+        registro = new Registro(Integer.parseInt(txtCodigo.getText()), LocalDate.parse(txtDataEntrada.getText()), recepcionista);
+        
+       if (quarto == null){//não encontrou o objeto na BD
+            JOptionPane.showMessageDialog(null, "Quarto não cadastrado!");
+            txtNQuarto.setText(null);
+            txtNQuarto.requestFocus();
+        }
+        else{ //encontrou o objeto na BD
+           
+           if(quarto.getSituacao() == true){ //se o quarto estiver true (ocupado)
+               JOptionPane.showMessageDialog(null, "Quarto ocupado!");
+               txtNQuarto.setText(null);
+               txtNQuarto.requestFocus();
+           }           
+           else{ //se o quarto estiver false (livre)
+               txtSituacao.setText("Quarto livre!");
+               //registro.setQuarto(quarto); //ligacao entre registro e quarto
+               
+               txtDataEntrada.setEnabled(true);
+               btnReservar.setEnabled(true);
+           }
+        }
+    }//GEN-LAST:event_btnBuscaSituacaoActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -317,7 +487,13 @@ public class GuiReservaLiberacao extends javax.swing.JFrame {
     private javax.swing.JTextField txtSituacao;
     private javax.swing.JTextField txtValorHospedagem;
     // End of variables declaration//GEN-END:variables
-    private DaoRegistro daRegistro=null;
+    private DaoRegistro daoRegistro=null;
     private Registro registro=null;
+    private DaoRecepcionista daoRecepcionista=null;
+    private Recepcionista recepcionista=null;
+    private DaoQuarto daoQuarto=null;
+    private Hospede hospede=null;
+    private DaoHospede daoHospede=null;
+    private Quarto quarto=null;
     private Conexao conexao=null;
 }

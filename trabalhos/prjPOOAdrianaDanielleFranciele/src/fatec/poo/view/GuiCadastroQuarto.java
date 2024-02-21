@@ -283,7 +283,7 @@ public class GuiCadastroQuarto extends javax.swing.JFrame {
         }else {
             tipoQuarto = "Casal";
         }
-        quarto = new Quarto(Integer.parseInt(txtNQuarto.getText()), tipoQuarto, Double.parseDouble(txtValorDiaria.getText()));
+           quarto = new Quarto(Integer.parseInt(txtNQuarto.getText()), tipoQuarto, Double.parseDouble(txtValorDiaria.getText()));
            daoQuarto.alterar(quarto);
         }         
         txtNQuarto.setText("");

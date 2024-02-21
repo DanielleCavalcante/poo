@@ -183,7 +183,7 @@ public class GuiServicoQuarto extends javax.swing.JFrame {
     private void btnConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarActionPerformed
         servicoQuarto = null;
         if(txtCodigo.getText().matches("[0-9]*")){
-        servicoQuarto = daoServicoQuarto.consultar(Integer.parseInt(txtCodigo.getText()));
+            servicoQuarto = daoServicoQuarto.consultar(Integer.parseInt(txtCodigo.getText()));
         
             if (servicoQuarto == null){//não encontrou o objeto no BD
                txtCodigo.setEnabled(false);
